@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.controller;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -36,10 +37,10 @@ public class RestauranteController {
 
     @GetMapping("/{restauranteId}")
     public ResponseEntity<Restaurante> buscar(@PathVariable Long restauranteId) {
-        Restaurante restaurante = cadastroRestauranteService.buscar(restauranteId);
+        Optional<Restaurante> restaurante = cadastroRestauranteService.buscar(restauranteId);
 
-        if (restaurante != null) {
-            return ResponseEntity.ok(restaurante);
+        if (restaurante.isPresent()) {
+            return ResponseEntity.ok(restaurante.get());
         }
 
         return ResponseEntity.notFound().build();
@@ -71,18 +72,18 @@ public class RestauranteController {
 
     @PatchMapping("/{restauranteId}")
     public ResponseEntity<?> atualizarParcial(@PathVariable Long restauranteId, @RequestBody Map<String, Object> campos) {
-        Restaurante restaurante = cadastroRestauranteService.buscar(restauranteId);
+        Optional<Restaurante> restaurante = cadastroRestauranteService.buscar(restauranteId);
 
-        if (restaurante == null) {
+        if (!restaurante.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
-        merge(campos, restaurante);
+        merge(campos, restaurante.get());
 
-        return atualizar(restauranteId, restaurante);
+        return atualizar(restauranteId, restaurante.get());
     }
 
-    private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino) {
+    private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino) {   
         ObjectMapper objectMapper = new ObjectMapper();
         Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
         

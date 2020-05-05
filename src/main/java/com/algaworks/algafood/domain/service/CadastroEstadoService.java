@@ -20,40 +20,34 @@ public class CadastroEstadoService {
     private EstadoRepository estadoRepository;
 
     public List<Estado> listar() {
-        return estadoRepository.listar();
+        return estadoRepository.findAll();
     }
 
     public Estado buscar(Long estadoId) {
-        Estado estadoAtual = estadoRepository.buscar(estadoId);
-
-        if (estadoAtual == null ) {
-            throw new EntidadeNaoEncontradaException(
-                String.format("Não há nenhum cadastro de estado de código %d", estadoId));
-        }
+        Estado estadoAtual = estadoRepository.findById(estadoId)
+            .orElseThrow(() -> 
+                new EntidadeNaoEncontradaException(String.format("Não há nenhum cadastro de estado de código %d", estadoId)));
 
         return estadoAtual;
     }
 
     public Estado adicionar(Estado estado) {
-        return estadoRepository.adicionar(estado);
+        return estadoRepository.save(estado);
     }
 
     public Estado atualizar(Long estadoId, Estado estado) {
-        Estado estadoAtual = estadoRepository.buscar(estadoId);
-
-        if (estadoAtual == null) {
-            throw new EntidadeNaoEncontradaException(
-                String.format("Não há nenhum cadastro de estado de código %d", estadoId));
-        }
+        Estado estadoAtual = estadoRepository.findById(estadoId)
+            .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                String.format("Não há nenhum cadastro de estado de código %d", estadoId)));
 
         BeanUtils.copyProperties(estado, estadoAtual, "id");
 
-        return estadoRepository.adicionar(estadoAtual);
+        return estadoRepository.save(estadoAtual);
     }
 
     public void remover(Long estadoId) {
         try {
-            estadoRepository.remover(estadoId);
+            estadoRepository.deleteById(estadoId);
         } catch (EmptyResultDataAccessException e) {
             throw new EntidadeNaoEncontradaException(
                 String.format("Não há nenhum cadastro de estado de código %d", estadoId));

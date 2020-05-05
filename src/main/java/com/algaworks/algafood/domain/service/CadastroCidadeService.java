@@ -1,6 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -26,59 +27,47 @@ public class CadastroCidadeService {
     private EstadoRepository estadoRepository;
 
     public List<Cidade> listar() {
-        return cidadeRepository.listar();
+        return cidadeRepository.findAll();
     }
 
     public Cidade buscar(Long cidadeId) {
-        Cidade cidade = cidadeRepository.buscar(cidadeId);
-
-        if (cidade == null) {
-            throw new EntidadeNaoEncontradaException(
-                String.format(CIDADE_MSG, cidadeId));
-        }
+        Cidade cidade = cidadeRepository.findById(cidadeId)
+            .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(CIDADE_MSG, cidadeId)));
 
         return cidade;
     }
 
     public Cidade cadastrar(Cidade cidade) {
         Long estadoId = cidade.getEstado().getId();
-        Estado estado = estadoRepository.buscar(estadoId);
-
-        if (estado == null) {
-            throw new EntidadeNaoEncontradaException(
-                String.format(ESTADO_MSG, estadoId));
-        }
+        Estado estado = estadoRepository.findById(estadoId)
+            .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(ESTADO_MSG, estadoId)));
 
         cidade.setEstado(estado);
 
-        return cidadeRepository.adicionar(cidade);
+        return cidadeRepository.save(cidade);
     }
 
     public Cidade atualizar(Long cidadeId, Cidade cidade) {
-        Cidade cidadeAtual = cidadeRepository.buscar(cidadeId);
+        Optional<Cidade> cidadeAtual = cidadeRepository.findById(cidadeId);
 
-        if (cidadeAtual == null) {
+        if (!cidadeAtual.isPresent()) {
             return null;
         }
 
         Long estadoId = cidade.getEstado().getId();
-        Estado estado = estadoRepository.buscar(estadoId);
-
-        if (estado == null) {
-            throw new EntidadeNaoEncontradaException(
-                String.format(ESTADO_MSG, estadoId));
-        }
+        Estado estado = estadoRepository.findById(estadoId)
+            .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(ESTADO_MSG, estadoId)));
 
         cidade.setEstado(estado);
 
-        BeanUtils.copyProperties(cidade, cidadeAtual, "id");
+        BeanUtils.copyProperties(cidade, cidadeAtual.get(), "id");
 
-        return cidadeRepository.adicionar(cidadeAtual);
+        return cidadeRepository.save(cidadeAtual.get());
     }
 
     public void excluir(Long cidadeId) {
         try {
-            cidadeRepository.remover(cidadeId);
+            cidadeRepository.deleteById(cidadeId);
         } catch (EmptyResultDataAccessException e) {
             throw new EntidadeNaoEncontradaException(
                 String.format(CIDADE_MSG, cidadeId));
