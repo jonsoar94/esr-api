@@ -69,4 +69,9 @@ public class TesterController {
     public List<Restaurante> findRestaurantes(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
         return restauranteRepository.find(nome, taxaInicial, taxaFinal);
     }
+
+    @GetMapping("/restaurante/com-frete-gratis")
+    public List<Restaurante> fingRestauranteComFreteGratis(String nome) {
+        return restauranteRepository.findRestauranteComFreteGratis(nome);
+    }
 }
