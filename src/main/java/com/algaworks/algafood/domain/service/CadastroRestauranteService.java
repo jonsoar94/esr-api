@@ -55,7 +55,7 @@ public class CadastroRestauranteService {
             new EntidadeNaoEncontradaException(String.format(COZINHA_MSG, cozinhaId)));
 
         restaurante.setCozinha(cozinha);
-        BeanUtils.copyProperties(restaurante, restauranteAtual.get(), "id");
+        BeanUtils.copyProperties(restaurante, restauranteAtual.get(), "id", "formasPagamento", "endereco", "dataCadastro");
         
         return restauranteRepository.save(restauranteAtual.get());
     }
