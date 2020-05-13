@@ -41,7 +41,7 @@ public class Produto {
     private Boolean ativo;
 
     @ManyToOne
-    @JoinColumn(name = "restaurante_id", foreignKey = @ForeignKey(name = "produto_restaurante_fk"))
+    @JoinColumn(name = "restaurante_id")
     private Restaurante restaurante;
 
 }

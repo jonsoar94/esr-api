@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "forma_de_pagamento")
+@Table(name = "forma_pagamento")
 public class FormaDePagamento {
 
     @Id

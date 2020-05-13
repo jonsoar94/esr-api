@@ -56,7 +56,7 @@ public class Restaurante {
     @ManyToMany //(fetch = FetchType.EAGER)
     @JoinTable(name = "restaurante_forma_pagamento", 
         joinColumns = @JoinColumn(name = "restaurante_id"), 
-        inverseJoinColumns = @JoinColumn(name = "forma_de_pagamento_id"))
+        inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
     private List<FormaDePagamento> formasPagamento = new ArrayList<>();
 
     @JsonIgnore 
