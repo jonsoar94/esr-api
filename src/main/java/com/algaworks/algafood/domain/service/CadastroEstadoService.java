@@ -24,11 +24,8 @@ public class CadastroEstadoService {
     }
 
     public Estado buscar(Long estadoId) {
-        Estado estadoAtual = estadoRepository.findById(estadoId)
-            .orElseThrow(() -> 
-                new EntidadeNaoEncontradaException(String.format("Não há nenhum cadastro de estado de código %d", estadoId)));
-
-        return estadoAtual;
+        return estadoRepository.findById(estadoId).orElseThrow(() -> new EntidadeNaoEncontradaException(
+                String.format("Não há nenhum cadastro de estado de código %d", estadoId)));
     }
 
     public Estado adicionar(Estado estado) {
@@ -36,9 +33,7 @@ public class CadastroEstadoService {
     }
 
     public Estado atualizar(Long estadoId, Estado estado) {
-        Estado estadoAtual = estadoRepository.findById(estadoId)
-            .orElseThrow(() -> new EntidadeNaoEncontradaException(
-                String.format("Não há nenhum cadastro de estado de código %d", estadoId)));
+        Estado estadoAtual = buscar(estadoId);
 
         BeanUtils.copyProperties(estado, estadoAtual, "id");
 
@@ -50,11 +45,11 @@ public class CadastroEstadoService {
             estadoRepository.deleteById(estadoId);
         } catch (EmptyResultDataAccessException e) {
             throw new EntidadeNaoEncontradaException(
-                String.format("Não há nenhum cadastro de estado de código %d", estadoId));
+                    String.format("Não há nenhum cadastro de estado de código %d", estadoId));
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
-                String.format("A entidade de código %d não pode ser excluida , pois está em uso", estadoId));
+                    String.format("A entidade de código %d não pode ser excluida , pois está em uso", estadoId));
         }
-        
+
     }
 }

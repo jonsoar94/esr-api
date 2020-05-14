@@ -31,7 +31,7 @@ create table produto (
 	restaurante_id bigint not null,
 	nome varchar(80) not null,
 	descricao text not null,
-	preco decimal(10,2) not null,
+	valor decimal(10,2) not null,
 	ativo tinyint(1) not null,
 	
 	primary key (id)
