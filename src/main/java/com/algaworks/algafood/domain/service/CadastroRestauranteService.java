@@ -2,8 +2,9 @@ package com.algaworks.algafood.domain.service;
 
 import java.util.List;
 
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoExcontradoException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
@@ -15,9 +16,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class CadastroRestauranteService {
 
-    private static final String RESTAURANTE_NAO_ENCONTRADO_MSG = "Não há nenhum restaurante cadastrado de código %d";
-    private static final String COZINHA_NAO_ENCONTRADA_MSG = "Não há nenhuma cozinha cadastrada de código %d";
-
     @Autowired
     private RestauranteRepository restauranteRepository;
 
@@ -28,17 +26,19 @@ public class CadastroRestauranteService {
         return restauranteRepository.findAll();
     }
 
-    public Restaurante buscar(Long id) {
-        return restauranteRepository.findById(id)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException(RESTAURANTE_NAO_ENCONTRADO_MSG));
+    public Restaurante buscar(Long restauranteId) {
+        return restauranteRepository.findById(restauranteId)
+                .orElseThrow(() -> new RestauranteNaoEncontradoExcontradoException(restauranteId));
     }
 
     public Restaurante adicionar(Restaurante restaurante) {
         Long cozinhaId = restaurante.getCozinha().getId();
-        Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
-
-        if(cozinha == null) {
-            throw new NegocioException(String.format(COZINHA_NAO_ENCONTRADA_MSG, cozinhaId));
+        Cozinha cozinha = null;
+        
+        try {
+            cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
+        } catch (CozinhaNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage(), e.getCause());
         }
         // se o restaurante existir, inserir ele ao objeto restaurante
         restaurante.setCozinha(cozinha);
@@ -50,10 +50,12 @@ public class CadastroRestauranteService {
         Restaurante restauranteAtual = buscar(restauranteId);
 
         Long cozinhaId = restaurante.getCozinha().getId();
-        Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
-
-        if (cozinha == null) {
-            throw new NegocioException(String.format(COZINHA_NAO_ENCONTRADA_MSG, cozinhaId));
+        Cozinha cozinha = null;
+        
+        try {
+            cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
+        } catch (CozinhaNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage(), e.getCause());
         }
 
         restaurante.setCozinha(cozinha);
