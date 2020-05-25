@@ -2,6 +2,8 @@ package com.algaworks.algafood.domain.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoExcontradoException;
@@ -31,10 +33,11 @@ public class CadastroRestauranteService {
                 .orElseThrow(() -> new RestauranteNaoEncontradoExcontradoException(restauranteId));
     }
 
+    @Transactional
     public Restaurante adicionar(Restaurante restaurante) {
         Long cozinhaId = restaurante.getCozinha().getId();
         Cozinha cozinha = null;
-        
+
         try {
             cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
         } catch (CozinhaNaoEncontradaException e) {
@@ -46,12 +49,13 @@ public class CadastroRestauranteService {
         return restauranteRepository.save(restaurante);
     }
 
+    @Transactional
     public Restaurante atualizar(Long restauranteId, Restaurante restaurante) {
         Restaurante restauranteAtual = buscar(restauranteId);
 
         Long cozinhaId = restaurante.getCozinha().getId();
         Cozinha cozinha = null;
-        
+
         try {
             cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
         } catch (CozinhaNaoEncontradaException e) {

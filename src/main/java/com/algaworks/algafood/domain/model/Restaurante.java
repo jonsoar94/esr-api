@@ -1,7 +1,7 @@
 package com.algaworks.algafood.domain.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +27,6 @@ import javax.validation.groups.Default;
 
 import com.algaworks.algafood.core.validation.Groups;
 import com.algaworks.algafood.core.validation.ValorZeroIncluiDescricao;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -67,29 +66,24 @@ public class Restaurante {
     @ManyToOne //(fetch = FetchType.LAZY)
     @JoinColumn(name = "cozinha_id", nullable = false, foreignKey = @ForeignKey(name="fk_restaurante_cidade"))
     private Cozinha cozinha;
-    
-    @JsonIgnore
+
     @ManyToMany //(fetch = FetchType.EAGER)
-    @JoinTable(name = "restaurante_forma_pagamento", 
-        joinColumns = @JoinColumn(name = "restaurante_id"), 
+    @JoinTable(name = "restaurante_forma_pagamento",
+        joinColumns = @JoinColumn(name = "restaurante_id"),
         inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
     private List<FormaDePagamento> formasPagamento = new ArrayList<>();
 
-    @JsonIgnore 
     @Embedded
     private Endereco endereco;
 
-    @JsonIgnore
     @Column(name = "data_cadastro", nullable = false, columnDefinition = "datetime")
     @CreationTimestamp
-    private LocalDateTime dataCadastro;
+    private OffsetDateTime dataCadastro;
 
-    @JsonIgnore
     @Column(name = "data_atualizacao", nullable = false, columnDefinition = "datetime")
     @UpdateTimestamp
-    private LocalDateTime dataAtualizacao;
+    private OffsetDateTime dataAtualizacao;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos = new ArrayList<>();
 }

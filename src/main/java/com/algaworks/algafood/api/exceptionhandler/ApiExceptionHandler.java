@@ -1,5 +1,9 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
@@ -7,6 +11,7 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
+
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -24,10 +29,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -199,10 +200,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatus status, WebRequest request) {
 
         if (body == null) {
-            body = Problem.builder().status(status.value()).timestamp(LocalDateTime.now())
+            body = Problem.builder().status(status.value()).timestamp(OffsetDateTime.now())
                     .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL).title(status.getReasonPhrase()).build();
         } else if (body instanceof String) {
-            body = Problem.builder().status(status.value()).timestamp(LocalDateTime.now())
+            body = Problem.builder().status(status.value()).timestamp(OffsetDateTime.now())
                     .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL).title((String) body).build();
         }
 
@@ -210,7 +211,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
-        return Problem.builder().status(status.value()).timestamp(LocalDateTime.now()).type(problemType.getUri())
+        return Problem.builder().status(status.value()).timestamp(OffsetDateTime.now()).type(problemType.getUri())
                 .title(problemType.getTitle()).detail(detail);
     }
 

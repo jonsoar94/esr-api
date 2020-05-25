@@ -1,5 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
+import javax.transaction.Transactional;
+
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -23,6 +25,7 @@ public class CadastroCozinhaService {
         return cozinhaRepository.save(cozinha);
     }
 
+    @Transactional
     public void excluir(Long cozinhaId) {
         try {
             cozinhaRepository.deleteById(cozinhaId);
@@ -38,6 +41,7 @@ public class CadastroCozinhaService {
             () -> new CozinhaNaoEncontradaException(cozinhaId));
     }
 
+    @Transactional
     public Cozinha atualizar(Cozinha cozinha, Long cozinhaId) {
         Cozinha cozinhaAtual = buscarOuFalhar(cozinhaId);
 

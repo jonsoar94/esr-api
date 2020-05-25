@@ -2,6 +2,8 @@ package com.algaworks.algafood.domain.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
@@ -37,10 +39,11 @@ public class CadastroCidadeService {
 
     }
 
+    @Transactional
     public Cidade cadastrar(Cidade cidade) {
         Long estadoId = cidade.getEstado().getId();
         Estado estado = null;
-        
+
         try {
             estado = cadastroEstadoService.buscar(estadoId);
         } catch (EstadoNaoEncontradoException e) {
@@ -52,12 +55,13 @@ public class CadastroCidadeService {
         return cidadeRepository.save(cidade);
     }
 
+    @Transactional
     public Cidade atualizar(Long cidadeId, Cidade cidade) {
         Cidade cidadeAtual = buscar(cidadeId);
 
         Long estadoId = cidade.getEstado().getId();
         Estado estado = null;
-        
+
         try {
             estado = cadastroEstadoService.buscar(estadoId);
         } catch (EstadoNaoEncontradoException e) {
@@ -71,6 +75,7 @@ public class CadastroCidadeService {
         return cidadeRepository.save(cidadeAtual);
     }
 
+    @Transactional
     public void excluir(Long cidadeId) {
         try {
             cidadeRepository.deleteById(cidadeId);
