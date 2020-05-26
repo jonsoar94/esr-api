@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.algaworks.algafood.api.assembler.CozinhaConverter;
+import com.algaworks.algafood.api.model.CozinhaDTO;
+import com.algaworks.algafood.api.model.input.CozinhaInputDTO;
 import com.algaworks.algafood.domain.model.Cozinha;
-import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,30 +27,36 @@ import org.springframework.web.bind.annotation.RestController;
 public class CozinhaController {
 
     @Autowired
-    private CozinhaRepository cozinhaRepository;
-
-    @Autowired
     private CadastroCozinhaService cadastroCozinhaService;
 
+    @Autowired
+    private CozinhaConverter cozinhaConverter;
+
     @GetMapping
-    public List<Cozinha> listar() {
-        return cozinhaRepository.findAll();
+    public List<CozinhaDTO> listar() {
+        List<Cozinha> cozinhas = cadastroCozinhaService.listar();
+        return cozinhaConverter.toCollectionDTO(cozinhas);
     }
 
     @GetMapping("/{cozinhaId}")
-    public Cozinha buscar(@PathVariable Long cozinhaId) {
-        return cadastroCozinhaService.buscarOuFalhar(cozinhaId);
+    public CozinhaDTO buscar(@PathVariable Long cozinhaId) {
+        Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
+        return cozinhaConverter.toDto(cozinha);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cozinha adicionar(@RequestBody @Valid Cozinha cozinha) {
-        return cadastroCozinhaService.salvar(cozinha);
+    public CozinhaDTO adicionar(@RequestBody @Valid CozinhaInputDTO cozinhaInputDTO) {
+        Cozinha cozinha = cozinhaConverter.toDomain(cozinhaInputDTO);
+        cozinha = cadastroCozinhaService.salvar(cozinha);
+        return cozinhaConverter.toDto(cozinha);
     }
 
     @PutMapping("/{cozinhaId}")
-    public Cozinha atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid Cozinha cozinha) {
-        return cadastroCozinhaService.atualizar(cozinha, cozinhaId);
+    public CozinhaDTO atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaInputDTO cozinhaInputDTO) {
+        Cozinha cozinha = cozinhaConverter.toDomain(cozinhaInputDTO);
+        cozinha = cadastroCozinhaService.atualizar(cozinha, cozinhaId);
+        return cozinhaConverter.toDto(cozinha);
     }
 
     @DeleteMapping("/{cozinhaId}")

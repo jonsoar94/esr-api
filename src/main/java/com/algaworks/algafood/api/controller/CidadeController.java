@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.algaworks.algafood.api.assembler.CidadeConverter;
+import com.algaworks.algafood.api.model.CidadeDTO;
+import com.algaworks.algafood.api.model.input.CidadeInputDTO;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 
@@ -26,25 +29,34 @@ public class CidadeController {
     @Autowired
     private CadastroCidadeService cadastroCidadeService;
 
+    @Autowired
+    private CidadeConverter cidadeConverter;
+
     @GetMapping
-    public List<Cidade> listar() {
-        return cadastroCidadeService.listar();
+    public List<CidadeDTO> listar() {
+        List<Cidade> cidades = cadastroCidadeService.listar();
+        return cidadeConverter.toCollectionDTO(cidades);
     }
-    
+
     @GetMapping("/{cidadeId}")
-    public Cidade buscar(@PathVariable Long cidadeId) {
-        return cadastroCidadeService.buscar(cidadeId);
+    public CidadeDTO buscar(@PathVariable Long cidadeId) {
+        Cidade cidade = cadastroCidadeService.buscar(cidadeId);
+        return cidadeConverter.toDto(cidade);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cidade adicionar(@RequestBody @Valid Cidade cidade) {
-        return cadastroCidadeService.cadastrar(cidade);
+    public CidadeDTO adicionar(@RequestBody @Valid CidadeInputDTO cidadeInputDTO) {
+        Cidade cidade = cidadeConverter.toDomain(cidadeInputDTO);
+        cidade = cadastroCidadeService.cadastrar(cidade);
+        return cidadeConverter.toDto(cidade);
     }
 
     @PutMapping("/{cidadeId}")
-    public Cidade atualizar(@PathVariable Long cidadeId, @RequestBody Cidade cidade) {
-        return cadastroCidadeService.atualizar(cidadeId, cidade);
+    public CidadeDTO atualizar(@PathVariable Long cidadeId, @RequestBody CidadeInputDTO cidadeInputDTO) {
+        Cidade cidade = cidadeConverter.toDomain(cidadeInputDTO);
+        cidade = cadastroCidadeService.atualizar(cidadeId, cidade);
+        return cidadeConverter.toDto(cidade);
     }
 
     @DeleteMapping("/{cidadeId}")

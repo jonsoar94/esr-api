@@ -18,14 +18,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
 
-import com.algaworks.algafood.core.validation.Groups;
 import com.algaworks.algafood.core.validation.ValorZeroIncluiDescricao;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -48,21 +41,21 @@ public class Restaurante {
 
     // @NotEmpty
     // @NotNull
-    @NotBlank //(groups = Groups.CadastroRestaurante.class)
-    @Column(nullable = false)
+    // @NotBlank //(groups = Groups.CadastroRestaurante.class)
+    // @Column(nullable = false)
     private String nome;
 
     // @DecimalMin("0")
-    @NotNull
-    @PositiveOrZero
+    // @NotNull
+    // @PositiveOrZero
     // @Multiplo(numero = 5) Take a look in the Multiplo and MultiploValitor annotation class.
     // @TaxaFrete Take a look in the taxaFrete annotation
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
-    @Valid // faz também a validação das propriedades do objeto cozinha e não apenas o not null
-    @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
-    @NotNull //(groups = Groups.CadastroRestaurante.class)
+    // @Valid // faz também a validação das propriedades do objeto cozinha e não apenas o not null
+    // @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
+    // @NotNull //(groups = Groups.CadastroRestaurante.class)
     @ManyToOne //(fetch = FetchType.LAZY)
     @JoinColumn(name = "cozinha_id", nullable = false, foreignKey = @ForeignKey(name="fk_restaurante_cidade"))
     private Cozinha cozinha;

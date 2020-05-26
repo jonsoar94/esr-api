@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.algaworks.algafood.api.assembler.EstadoConverter;
+import com.algaworks.algafood.api.model.EstadoDTO;
+import com.algaworks.algafood.api.model.input.EstadoInputDTO;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
 
@@ -26,25 +29,34 @@ public class EstadoController {
     @Autowired
     private CadastroEstadoService cadastroEstadoService;
 
+    @Autowired
+    private EstadoConverter estadoConverter;
+
     @GetMapping
-    public List<Estado> listar() {
-        return cadastroEstadoService.listar();
+    public List<EstadoDTO> listar() {
+        List<Estado> estados = cadastroEstadoService.listar();
+        return estadoConverter.toCollectionDTO(estados);
     }
 
     @GetMapping("/{estadoId}")
-    public Estado buscar(@PathVariable Long estadoId) {
-        return cadastroEstadoService.buscar(estadoId);
-    } 
+    public EstadoDTO buscar(@PathVariable Long estadoId) {
+        Estado estado = cadastroEstadoService.buscar(estadoId);
+        return estadoConverter.toDto(estado);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Estado adicionar(@RequestBody @Valid Estado estado) {
-        return cadastroEstadoService.adicionar(estado);
+    public EstadoDTO adicionar(@RequestBody @Valid EstadoInputDTO estadoInputDTO) {
+        Estado estado = estadoConverter.toDomain(estadoInputDTO);
+        estado = cadastroEstadoService.adicionar(estado);
+        return estadoConverter.toDto(estado);
     }
 
     @PutMapping("/{estadoId}")
-    public Estado atualizar(@PathVariable Long estadoId, @RequestBody Estado estado) {
-       return cadastroEstadoService.atualizar(estadoId, estado);
+    public EstadoDTO atualizar(@PathVariable Long estadoId, @RequestBody EstadoInputDTO estadoInputDTO) {
+        Estado estado = estadoConverter.toDomain(estadoInputDTO);
+        estado = cadastroEstadoService.atualizar(estadoId, estado);
+       return estadoConverter.toDto(estado);
     }
 
     @DeleteMapping("/{estadoId}")

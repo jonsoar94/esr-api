@@ -1,5 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
@@ -21,6 +23,10 @@ public class CadastroCozinhaService {
     @Autowired
     private CozinhaRepository cozinhaRepository;
 
+    public List<Cozinha> listar() {
+        return cozinhaRepository.findAll();
+    }
+
     public Cozinha salvar(Cozinha cozinha) {
         return cozinhaRepository.save(cozinha);
     }
@@ -29,6 +35,7 @@ public class CadastroCozinhaService {
     public void excluir(Long cozinhaId) {
         try {
             cozinhaRepository.deleteById(cozinhaId);
+            cozinhaRepository.flush();
         } catch (EmptyResultDataAccessException e) {
             throw new CozinhaNaoEncontradaException(cozinhaId);
         } catch (DataIntegrityViolationException  e) {
