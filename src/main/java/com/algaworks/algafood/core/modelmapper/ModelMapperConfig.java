@@ -1,23 +1,25 @@
 package com.algaworks.algafood.core.modelmapper;
 
-import com.algaworks.algafood.api.model.RestauranteDTO;
-import com.algaworks.algafood.domain.model.Restaurante;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.algaworks.algafood.api.model.RestauranteDTO;
+import com.algaworks.algafood.domain.model.Restaurante;
+
 @Configuration
 public class ModelMapperConfig {
 
-    @Bean
-    public ModelMapper modelMapper() {
-        var modelMapper = new ModelMapper();
+	@Bean
+	public ModelMapper modelMapper() {
+		var modelMapper = new ModelMapper();
+	
+		modelMapper.createTypeMap(Restaurante.class, RestauranteDTO.class)
+			.addMapping(Restaurante::getTaxaFrete, RestauranteDTO::setTaxaFrete)
+			.addMapping(src -> src.getEndereco().getCidade().getEstado().getNome(), 
+					   (dest, value) -> dest.getEndereco().getCidade().setEstado((String)value));
+		
 
-        // quando a a propriedade é diferente e o modelMapper não encontra um match, podemos mapear
-        // qual propriedade da origem será enviada para a destino.
-        modelMapper.createTypeMap(Restaurante.class, RestauranteDTO.class)
-            .addMapping(Restaurante::getTaxaFrete, RestauranteDTO::setPrecoFrete);
-        return modelMapper;
-    }
+		return modelMapper;
+	}
 }

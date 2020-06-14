@@ -9,11 +9,10 @@ import lombok.Setter;
 @Getter
 public class RestauranteDTO {
 
-    private Long id;
-
-    private String nome;
-
-    private BigDecimal precoFrete;
-
-    private CozinhaDTO cozinha;
+	private Long id;
+	private String nome;
+	private BigDecimal taxaFrete;
+	private CozinhaDTO cozinha;
+	private Boolean ativo;
+	private EnderecoDTO endereco;
 }

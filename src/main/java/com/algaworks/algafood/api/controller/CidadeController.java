@@ -6,7 +6,7 @@ import javax.validation.Valid;
 
 import com.algaworks.algafood.api.assembler.CidadeConverter;
 import com.algaworks.algafood.api.model.CidadeDTO;
-import com.algaworks.algafood.api.model.input.CidadeInputDTO;
+import com.algaworks.algafood.api.model.input.cidade.CidadeInputDTO;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 

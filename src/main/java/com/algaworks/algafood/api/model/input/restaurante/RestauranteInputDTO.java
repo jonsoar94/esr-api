@@ -1,4 +1,4 @@
-package com.algaworks.algafood.api.model.input;
+package com.algaworks.algafood.api.model.input.restaurante;
 
 import java.math.BigDecimal;
 
@@ -6,6 +6,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+
+import com.algaworks.algafood.api.model.input.cozinha.CozinhaIdInputDTO;
+import com.algaworks.algafood.api.model.input.endereco.EnderecoInputDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,5 +26,9 @@ public class RestauranteInputDTO {
 
     @Valid
     @NotNull
-    private CozinhaIdInput cozinha;
+    private CozinhaIdInputDTO cozinha;
+    
+    @Valid
+    @NotNull
+    private EnderecoInputDTO endereco;
 }

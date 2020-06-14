@@ -6,7 +6,7 @@ import javax.validation.Valid;
 
 import com.algaworks.algafood.api.assembler.CozinhaConverter;
 import com.algaworks.algafood.api.model.CozinhaDTO;
-import com.algaworks.algafood.api.model.input.CozinhaInputDTO;
+import com.algaworks.algafood.api.model.input.cozinha.CozinhaInputDTO;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 

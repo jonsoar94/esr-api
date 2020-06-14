@@ -4,68 +4,88 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
-import com.algaworks.algafood.domain.exception.NegocioException;
-import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoExcontradoException;
-import com.algaworks.algafood.domain.model.Cozinha;
-import com.algaworks.algafood.domain.model.Restaurante;
-import com.algaworks.algafood.domain.repository.RestauranteRepository;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoExcontradoException;
+import com.algaworks.algafood.domain.model.Cidade;
+import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.repository.RestauranteRepository;
+
 @Service
 public class CadastroRestauranteService {
 
-    @Autowired
-    private RestauranteRepository restauranteRepository;
+	@Autowired
+	private RestauranteRepository restauranteRepository;
 
-    @Autowired
-    private CadastroCozinhaService cadastroCozinhaService;
+	@Autowired
+	private CadastroCozinhaService cadastroCozinhaService;
 
-    public List<Restaurante> listar() {
-        return restauranteRepository.findAll();
-    }
+	@Autowired
+	private CadastroCidadeService cadastroCidadeService;
 
-    public Restaurante buscar(Long restauranteId) {
-        return restauranteRepository.findById(restauranteId)
-                .orElseThrow(() -> new RestauranteNaoEncontradoExcontradoException(restauranteId));
-    }
+	public List<Restaurante> listar() {
+		return restauranteRepository.findAll();
+	}
 
-    @Transactional
-    public Restaurante adicionar(Restaurante restaurante) {
-        Long cozinhaId = restaurante.getCozinha().getId();
-        Cozinha cozinha = null;
+	public Restaurante buscar(Long restauranteId) {
+		return restauranteRepository.findById(restauranteId)
+				.orElseThrow(() -> new RestauranteNaoEncontradoExcontradoException(restauranteId));
+	}
 
-        try {
-            cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
-        } catch (CozinhaNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage(), e.getCause());
-        }
-        // se o restaurante existir, inserir ele ao objeto restaurante
-        restaurante.setCozinha(cozinha);
+	@Transactional
+	public Restaurante adicionar(Restaurante restaurante) {
+		Long cozinhaId = restaurante.getCozinha().getId();
+		Long cidadeId = restaurante.getEndereco().getCidade().getId();
 
-        return restauranteRepository.save(restaurante);
-    }
+		Cozinha cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
+		Cidade cidade = cadastroCidadeService.buscar(cidadeId);
 
-    @Transactional
-    public Restaurante atualizar(Long restauranteId, Restaurante restaurante) {
-        Restaurante restauranteAtual = buscar(restauranteId);
+		restaurante.setCozinha(cozinha);
+		restaurante.getEndereco().setCidade(cidade);
 
-        Long cozinhaId = restaurante.getCozinha().getId();
-        Cozinha cozinha = null;
+		return restauranteRepository.save(restaurante);
+	}
 
-        try {
-            cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
-        } catch (CozinhaNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage(), e.getCause());
-        }
+	@Transactional
+	public void ativar(Long restauranteId) {
+		Restaurante restaurante = buscar(restauranteId);
+		restaurante.ativar();
+	}
 
-        restaurante.setCozinha(cozinha);
-        BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco",
-                "dataCadastro");
+	@Transactional
+	public void inativar(Long restauranteId) {
+		Restaurante restaurante = buscar(restauranteId);
+		restaurante.inativar();
+	}
 
-        return restauranteRepository.save(restauranteAtual);
-    }
+	@Transactional
+	public Restaurante atualizar(Long restauranteId, Restaurante restaurante) {
+		Restaurante restauranteAtual = buscar(restauranteId);
+		
+		Cozinha cozinha = null;
+		Cidade cidade = null;
+		
+		try {
+			Long cozinhaId = restaurante.getCozinha().getId();
+			Long cidadeId = restaurante.getEndereco().getCidade().getId();
+
+			cozinha = cadastroCozinhaService.buscarOuFalhar(cozinhaId);
+		    cidade = cadastroCidadeService.buscar(cidadeId);
+		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		}
+
+		restaurante.setCozinha(cozinha);
+		restaurante.getEndereco().setCidade(cidade);
+
+		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "dataCadastro");
+
+		return restauranteRepository.save(restauranteAtual);
+	}
 }

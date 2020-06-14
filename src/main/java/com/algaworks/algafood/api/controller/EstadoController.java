@@ -6,7 +6,7 @@ import javax.validation.Valid;
 
 import com.algaworks.algafood.api.assembler.EstadoConverter;
 import com.algaworks.algafood.api.model.EstadoDTO;
-import com.algaworks.algafood.api.model.input.EstadoInputDTO;
+import com.algaworks.algafood.api.model.input.estado.EstadoInputDTO;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
 

@@ -39,28 +39,16 @@ public class Restaurante {
     @EqualsAndHashCode.Include
     private Long id;
 
-    // @NotEmpty
-    // @NotNull
-    // @NotBlank //(groups = Groups.CadastroRestaurante.class)
-    // @Column(nullable = false)
     private String nome;
 
-    // @DecimalMin("0")
-    // @NotNull
-    // @PositiveOrZero
-    // @Multiplo(numero = 5) Take a look in the Multiplo and MultiploValitor annotation class.
-    // @TaxaFrete Take a look in the taxaFrete annotation
     @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
 
-    // @Valid // faz também a validação das propriedades do objeto cozinha e não apenas o not null
-    // @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
-    // @NotNull //(groups = Groups.CadastroRestaurante.class)
-    @ManyToOne //(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "cozinha_id", nullable = false, foreignKey = @ForeignKey(name="fk_restaurante_cidade"))
     private Cozinha cozinha;
 
-    @ManyToMany //(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "restaurante_forma_pagamento",
         joinColumns = @JoinColumn(name = "restaurante_id"),
         inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
@@ -68,6 +56,8 @@ public class Restaurante {
 
     @Embedded
     private Endereco endereco;
+    
+    private Boolean ativo = Boolean.TRUE;
 
     @Column(name = "data_cadastro", nullable = false, columnDefinition = "datetime")
     @CreationTimestamp
@@ -79,4 +69,12 @@ public class Restaurante {
 
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos = new ArrayList<>();
+    
+    public void ativar() {
+    	setAtivo(true);
+    }
+    
+    public void inativar() {
+    	setAtivo(false);
+    }
 }

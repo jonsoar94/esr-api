@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.algaworks.algafood.api.model.CozinhaDTO;
-import com.algaworks.algafood.api.model.input.CozinhaInputDTO;
+import com.algaworks.algafood.api.model.input.cozinha.CozinhaInputDTO;
 import com.algaworks.algafood.domain.model.Cozinha;
 
 import org.modelmapper.ModelMapper;

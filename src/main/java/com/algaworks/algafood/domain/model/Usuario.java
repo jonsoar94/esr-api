@@ -48,4 +48,8 @@ public class Usuario {
             joinColumns = @JoinColumn(name = "grupo_id"),
             inverseJoinColumns = @JoinColumn(name = "permissao_id"))
     private List<Permissao> permissoes = new ArrayList<>();
+    
+    public boolean senhasIdenticas(String senha) {
+    	return this.senha.equals(senha);
+    }
 }

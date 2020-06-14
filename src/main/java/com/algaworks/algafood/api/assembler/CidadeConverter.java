@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.algaworks.algafood.api.model.CidadeDTO;
-import com.algaworks.algafood.api.model.input.CidadeInputDTO;
+import com.algaworks.algafood.api.model.input.cidade.CidadeInputDTO;
 import com.algaworks.algafood.domain.model.Cidade;
 
 import org.modelmapper.ModelMapper;
